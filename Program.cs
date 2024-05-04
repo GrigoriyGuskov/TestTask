@@ -25,6 +25,9 @@ class Program
             switch(text)
             {
                 case "add":
+                    var worker = new Employee();
+                    if(worker.SetEmployee())
+                        EmployeesDBinfo.AddEmployee(worker);
                     break;
                 case "print":
                     EmployeesDBinfo.PrintAll();
