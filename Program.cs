@@ -8,11 +8,41 @@ class Program
     static void Main()
     {
         SqlConnection connection = EmployeesDBinfo.Connect();
-        //Console.WriteLine(connection.ClientConnectionId);
-        //Console.WriteLine(DBinfo.Connection.ClientConnectionId);
 
-        EmployeesDBinfo.PrintAll();
+        Console.WriteLine("Список доступных команд:");
+        Console.WriteLine("Add - добавление нового сотрудника");
+        Console.WriteLine("Print - просмотр всех сотрудников");
+        Console.WriteLine("Update - обновление информации о сотруднике");
+        Console.WriteLine("Delete - удаление сотрудника");
+        Console.WriteLine("Exit - выход из приложения\n");
 
+        Console.WriteLine("Введите команду: ");
+        string text = Console.ReadLine();
+        text.ToLower();
+
+        while(text != "exit")
+        {
+            switch(text)
+            {
+                case "add":
+                    break;
+                case "print":
+                    EmployeesDBinfo.PrintAll();
+                    break;
+                case "update":
+                    break;
+                case "delete":
+                    break;
+                default:
+                    Console.WriteLine("Неизвестная команда");
+                    break;
+            }
+
+            Console.WriteLine("\nВведите команду: ");
+            text = Console.ReadLine();
+            text.ToLower();
+        }
+        
         if (connection != null)
             connection.Close();
     }
