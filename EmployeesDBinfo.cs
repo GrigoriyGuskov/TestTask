@@ -12,7 +12,13 @@ internal static class EmployeesDBinfo
     private static string _database = "EmployeeDB";
     private static SqlConnection _connection = null;
 
-    public static SqlConnection Connection {  get { return _connection; } }
+    public static SqlConnection Connection 
+    {
+        get 
+        {
+            return _connection; 
+        } 
+    }
     public static string ConnectionString
     {
         get
