@@ -72,7 +72,7 @@ internal static class EmployeesDBinfo
         string commandString = $"INSERT INTO Employees (FirstName, LastName, Email, DateOfBirth, Salary) VALUES ('{worker.FirstName}', '{worker.LastName}', '{worker.Email}', {worker.DateOfBirth}, {worker.Salary})";
         SqlCommand command = new SqlCommand(commandString, _connection);
         var res =  command.ExecuteNonQuery();
-        if (res != 1)
+        if (res == 0)
             Console.WriteLine($"Не удалось добавить работника {worker.FirstName} {worker.LastName} в базу данных");
     }
     public static void PrintAll()
