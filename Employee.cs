@@ -69,6 +69,76 @@ internal class Employee
         }
     }
 
+    public bool SetEmployee()
+    {
+
+        Console.WriteLine("Введите имя:");
+        string text = Console.ReadLine();
+        if (text.ToLower() == "cancel")
+            return false;
+        FirstName = text;
+        while (!IsValidFirstName())
+        {
+            Console.WriteLine("Это имя не подходит. Попробуйте еще раз или введите \"Cancel\" для отмены");
+            text = Console.ReadLine();
+            if (text.ToLower() == "cancel")
+                return false;
+            FirstName = text;
+        }
+        Console.WriteLine("Введите фамилию:");
+        text = Console.ReadLine();
+        if (text.ToLower() == "cancel")
+            return false;
+        LastName = text;
+        while (!IsValidLastName())
+        {
+            Console.WriteLine("Эта фамилия не подходит. Попробуйте еще раз или введите \"Cancel\" для отмены");
+            text = Console.ReadLine();
+            if (text.ToLower() == "cancel")
+                return false;
+            LastName = text;
+        }
+        Console.WriteLine("Введите email:");
+        text = Console.ReadLine();
+        if (text.ToLower() == "cancel")
+            return false;
+        Email = text;
+        while (!IsValidEmail())
+        {
+            Console.WriteLine("Этот email не подходит. Попробуйте еще раз или введите \"Cancel\" для отмены");
+            text = Console.ReadLine();
+            if (text.ToLower() == "cancel")
+                return false;
+            Email = text;
+        }
+        Console.WriteLine("Введите дату рождения:");
+        text = Console.ReadLine();
+        if (text.ToLower() == "cancel")
+            return false;
+        DateOfBirth = DateOnly.Parse(text);
+        while (!IsValidDateOfBirth())
+        {
+            Console.WriteLine("Мы не принимаем на работу лиц младше 14 лет. Попробуйте еще раз или введите \"Cancel\" для отмены");
+            text = Console.ReadLine();
+            if (text.ToLower() == "cancel")
+                return false;
+            DateOfBirth = DateOnly.Parse(text);
+        }
+        Console.WriteLine("Введите зарплату:");
+        text = Console.ReadLine();
+        if (text.ToLower() == "cancel")
+            return false;
+        Salary = decimal.Parse(text);
+        while (!IsValidSalary())
+        {
+            Console.WriteLine("Видимо в бухгалтерии опять всё перепутали. Попробуйте еще раз или введите \"Cancel\" для отмены");
+            text = Console.ReadLine();
+            if (text.ToLower() == "cancel")
+                return false;
+            Salary = decimal.Parse(text);
+        }
+        return true;
+    }
     public bool IsValid()
     {
         return IsValidFirstName() && IsValidLastName() && IsValidEmail() && IsValidDateOfBirth() && IsValidSalary();
@@ -110,10 +180,10 @@ internal class Employee
                         return false;
                     break;
                 case 1:
-                    if (!(let == '-' || let == '_' || let == '.' || char.IsLetterOrDigit(let)))
-                        return false;
                     if (let == '@')
                         ++fl;
+                    else if (!(let == '-' || let == '_' || let == '.' || char.IsLetterOrDigit(let)))
+                        return false;
                     break;
                 case 2:
                     if (char.IsLetter(let))
@@ -143,7 +213,7 @@ internal class Employee
     public bool IsValidDateOfBirth()
     {
         DateOnly today = DateOnly.FromDateTime(DateTime.Now);
-        if (today < DateOfBirth.AddYears(14) || today > DateOfBirth.AddYears(127))
+        if (today < DateOfBirth.AddYears(14))
             return false;
         return true;
     }
