@@ -69,7 +69,7 @@ internal static class EmployeesDBinfo
             Console.WriteLine("Неверные данные работника");
             return;
         }
-        string commandString = $"INSERT INTO Employees (FirstName, LastName, Email, DateOfBirth, Salary) VALUES ('{worker.FirstName}', '{worker.LastName}', '{worker.Email}', {worker.DateOfBirth}, {worker.Salary})";
+        string commandString = $"INSERT INTO Employees (FirstName, LastName, Email, DateOfBirth, Salary) VALUES ('{worker.FirstName}', '{worker.LastName}', '{worker.Email}', '{worker.DateOfBirth.Year}.{worker.DateOfBirth.Month}.{worker.DateOfBirth.Day}', {worker.Salary})";
         SqlCommand command = new SqlCommand(commandString, _connection);
         var res =  command.ExecuteNonQuery();
         if (res == 0)
