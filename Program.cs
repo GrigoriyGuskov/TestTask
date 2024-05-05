@@ -35,6 +35,7 @@ class Program
                 case "update":
                     break;
                 case "delete":
+                    EmployeesDBinfo.DeleteEmployee();
                     break;
                 default:
                     Console.WriteLine("Неизвестная команда");
