@@ -148,7 +148,7 @@ internal class Employee
 
     public static string GetUpdateString()
     {
-        string commandString = $"UPDATE Employees ";
+        string commandString = $"UPDATE {EmployeesDBinfo.Table} ";
 
         bool setfl = false;
 
@@ -224,7 +224,7 @@ internal class Employee
             commandString += "Email = '" + text + "'";
         }
 
-        Console.WriteLine("Введите новую дату рождения в формате DD/MM/YYYY:");
+        Console.WriteLine("Введите новую дату рождения в формате DD/MM/YYYY или \"-\" чтобы оставить без изменений:");
         text = Console.ReadLine();
         if (text.ToLower() == "cancel")
             return null;

@@ -10,15 +10,9 @@ internal static class EmployeesDBinfo
 {
     private static string _server = "DESKTOP-VGDRUF3";
     private static string _database = "EmployeeDB";
+    private static string _table = "Employees";
     private static SqlConnection _connection = null;
-
-    public static SqlConnection Connection 
-    {
-        get 
-        {
-            return _connection; 
-        } 
-    }
+    public static string Table { get { return _table; } }
     public static string ConnectionString
     {
         get
@@ -37,24 +31,39 @@ internal static class EmployeesDBinfo
         catch (SqlException ex)
         {
             Console.WriteLine(ex.Message);
-            _connection = null;
-        }   
+        }
         finally
         {
-            if (_connection != null)
+            
+            // Вывод информации о подключении
+            Console.WriteLine("Свойства подключения:");
+            Console.WriteLine($"\tБаза данных: {_connection.Database}");
+            Console.WriteLine($"\tСервер: {_connection.DataSource}");
+            Console.WriteLine($"\tСостояние: {_connection.State}");
+            if(_connection.State != ConnectionState.Open)
             {
-                // Вывод информации о подключении
-                Console.WriteLine("Свойства подключения:");
-                Console.WriteLine($"\tСтрока подключения: {_connection.ConnectionString}");
-                Console.WriteLine($"\tБаза данных: {_connection.Database}");
-                Console.WriteLine($"\tСервер: {_connection.DataSource}");
-                Console.WriteLine($"\tВерсия сервера: {_connection.ServerVersion}");
-                Console.WriteLine($"\tСостояние: {_connection.State}");
-                Console.WriteLine($"\tWorkstationld: {_connection.WorkstationId}");
-            }  
+                _connection = null;
+            }
+
         }
         
         return _connection;
+    }
+    public static SqlConnection ReConnect()
+    {
+        Console.WriteLine("Введите новое имя сервера или \"-\" чтобы оставить без изменений или \"Cancel\" для отмены:");
+        string text = Console.ReadLine();
+        if (text.ToLower() == "cancel")
+            return _connection;
+        if(text != "-")
+            _server = text;
+        Console.WriteLine("Введите новое название базы данных или \"-\" чтобы оставить без изменений или \"Cancel\" для отмены:");
+        text = Console.ReadLine();
+        if (text.ToLower() == "cancel")
+            return _connection;
+        if (text != "-")
+            _database = text;
+        return Connect();
     }
 
     public static void AddEmployee(Employee worker)
@@ -69,7 +78,7 @@ internal static class EmployeesDBinfo
             Console.WriteLine("Неверные данные работника");
             return;
         }
-        string commandString = $"INSERT INTO Employees (FirstName, LastName, Email, DateOfBirth, Salary) VALUES ('{worker.FirstName}', '{worker.LastName}', '{worker.Email}', '{worker.DateOfBirth.Year}.{worker.DateOfBirth.Month}.{worker.DateOfBirth.Day}', {worker.Salary})";
+        string commandString = $"INSERT INTO {_table} (FirstName, LastName, Email, DateOfBirth, Salary) VALUES ('{worker.FirstName}', '{worker.LastName}', '{worker.Email}', '{worker.DateOfBirth.Year}.{worker.DateOfBirth.Month}.{worker.DateOfBirth.Day}', {worker.Salary})";
         SqlCommand command = new SqlCommand(commandString, _connection);
         var res =  command.ExecuteNonQuery();
         if (res == 0)
@@ -82,7 +91,7 @@ internal static class EmployeesDBinfo
             Console.WriteLine("Отсутствует подключение");
             return;
         }
-        string commandString = "SELECT * FROM Employees";
+        string commandString = $"SELECT * FROM {_table}";
         SqlCommand command = new SqlCommand(commandString, _connection);
         SqlDataReader reader = command.ExecuteReader();
         if (reader.HasRows) 
@@ -109,7 +118,7 @@ internal static class EmployeesDBinfo
         
         while (true)
         {
-            string commandString = $"SELECT * FROM Employees WHERE EmployeeID = {text}";
+            string commandString = $"SELECT * FROM {_table} WHERE EmployeeID = {text}";
             SqlCommand command = new SqlCommand(commandString, _connection);
             SqlDataReader reader = command.ExecuteReader();
             if (!reader.HasRows)
@@ -125,7 +134,7 @@ internal static class EmployeesDBinfo
             else
             {
                 reader.Close();
-                commandString = $"DELETE FROM Employees WHERE EmployeeID = {text}";
+                commandString = $"DELETE FROM {_table} WHERE EmployeeID = {text}";
                 command = new SqlCommand(commandString, _connection);
                 command.ExecuteNonQuery();
                 return;
@@ -148,7 +157,7 @@ internal static class EmployeesDBinfo
 
         while (true)
         {
-            string commandString = $"SELECT * FROM Employees WHERE EmployeeID = {text}";
+            string commandString = $"SELECT * FROM {_table} WHERE EmployeeID = {text}";
             SqlCommand command = new SqlCommand(commandString, _connection);
             SqlDataReader reader = command.ExecuteReader();
             if (!reader.HasRows)

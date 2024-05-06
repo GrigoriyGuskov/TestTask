@@ -10,6 +10,7 @@ class Program
         SqlConnection connection = EmployeesDBinfo.Connect();
 
         Console.WriteLine("Список доступных команд:");
+        Console.WriteLine("Reconnect - изменить данные БД и переподключиться");
         Console.WriteLine("Add - добавление нового сотрудника");
         Console.WriteLine("Print - просмотр всех сотрудников");
         Console.WriteLine("Update - обновление информации о сотруднике");
@@ -24,6 +25,9 @@ class Program
         {
             switch(text)
             {
+                case "reconnect":
+                    connection = EmployeesDBinfo.ReConnect();
+                    break;
                 case "add":
                     var worker = new Employee();
                     if(worker.SetEmployee())
