@@ -9,13 +9,7 @@ class Program
     {
         SqlConnection connection = EmployeesDBinfo.Connect();
 
-        Console.WriteLine("Список доступных команд:");
-        Console.WriteLine("Reconnect - изменить данные БД и переподключиться");
-        Console.WriteLine("Add - добавление нового сотрудника");
-        Console.WriteLine("Print - просмотр всех сотрудников");
-        Console.WriteLine("Update - обновление информации о сотруднике");
-        Console.WriteLine("Delete - удаление сотрудника");
-        Console.WriteLine("Exit - выход из приложения\n");
+        PrintCommands();
 
         Console.WriteLine("Введите команду: ");
         string text = Console.ReadLine();
@@ -25,6 +19,9 @@ class Program
         {
             switch(text)
             {
+                case "help":
+                    PrintCommands();
+                    break;
                 case "reconnect":
                     connection = EmployeesDBinfo.ReConnect();
                     break;
@@ -42,6 +39,9 @@ class Program
                 case "delete":
                     EmployeesDBinfo.DeleteEmployee();
                     break;
+                case "deleteall":
+                    EmployeesDBinfo.DeleteAllEmployee();
+                    break;
                 default:
                     Console.WriteLine("Неизвестная команда");
                     break;
@@ -54,5 +54,17 @@ class Program
         
         if (connection != null)
             connection.Close();
+    }
+    static void PrintCommands()
+    {
+        Console.WriteLine("Список доступных команд:");
+        Console.WriteLine("Help - посмотреть список доступных команд");
+        Console.WriteLine("Reconnect - изменить данные БД и переподключиться");
+        Console.WriteLine("Add - добавление нового сотрудника");
+        Console.WriteLine("Print - просмотр всех сотрудников");
+        Console.WriteLine("Update - обновление информации о сотруднике");
+        Console.WriteLine("Delete - удаление сотрудника");
+        Console.WriteLine("DeleteAll - удаление данных всех сотрудников");
+        Console.WriteLine("Exit - выход из приложения\n");
     }
 }

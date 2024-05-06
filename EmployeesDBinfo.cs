@@ -102,14 +102,16 @@ internal static class EmployeesDBinfo
         string commandString = $"SELECT * FROM {_table}";
         SqlCommand command = new SqlCommand(commandString, _connection);
         SqlDataReader reader = command.ExecuteReader();
-        if (reader.HasRows) 
+        if (reader.HasRows)
         {
             Console.WriteLine($"{reader.GetName(0),25}{reader.GetName(1),25}{reader.GetName(2),25}{reader.GetName(3),25}{reader.GetName(4),25}{reader.GetName(5),25}");
-            while (reader.Read()) 
+            while (reader.Read())
             {
-                Console.WriteLine($"{reader.GetValue(0),25}{reader.GetValue(1),25}{reader.GetValue(2),25}{reader.GetValue(3),25}{reader.GetValue(4).ToString().Substring(0,10),25}{reader.GetValue(5),25}");
+                Console.WriteLine($"{reader.GetValue(0),25}{reader.GetValue(1),25}{reader.GetValue(2),25}{reader.GetValue(3),25}{reader.GetValue(4).ToString().Substring(0, 10),25}{reader.GetValue(5),25}");
             }
         }
+        else
+            Console.WriteLine("В таблице отсутствуют данные");
         reader.Close();
     }
     public static void DeleteEmployee()
@@ -151,8 +153,30 @@ internal static class EmployeesDBinfo
         }
 
     }
+    public static void DeleteAllEmployee()
+    {
+        if (_connection == null || _connection.State != ConnectionState.Open)
+        {
+            Console.WriteLine("Отсутствует подключение");
+            return;
+        }
+        Console.WriteLine("Вы уверены, что хотите удалить все данные?");
+        Console.WriteLine("Введите \"Yes\" или \"No\":");
+        string text = Console.ReadLine();
+        text.ToLower();
+        while (text != "yes")
+        {
+            if (text == "no")
+                return;
+            Console.WriteLine("Я не понимаю. Попробуйте еще раз");
+            text = Console.ReadLine().ToLower();
+        }
+        string commandString = $"TRUNCATE TABLE {_table}";
+        SqlCommand command = new SqlCommand(commandString, _connection);
+        command.ExecuteNonQuery();
+    }
 
-    public static void UpdateEmployee()
+        public static void UpdateEmployee()
     {
         if (_connection == null || _connection.State != ConnectionState.Open)
         {
