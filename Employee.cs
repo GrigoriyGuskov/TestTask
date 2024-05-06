@@ -290,6 +290,7 @@ internal class Employee
         if(name.Length > 50)
         {
             Console.WriteLine("Слишком длинное имя или фамилия");
+            return false;
         }
         foreach (char let in name)
             if (!char.IsLetter(let))
@@ -301,8 +302,16 @@ internal class Employee
     }
     public static bool IsValidEmail(string email) 
     {
-        if (email.Length < 5 || email.Length > 100)
+        if (string.IsNullOrEmpty(email) || string.IsNullOrWhiteSpace(email))
+        {
+            Console.WriteLine("Адрес электроноой почты не может быть пустым");
             return false;
+        }
+        if (email.Length > 100)
+        {
+            Console.WriteLine("Слишком длинный адрес электронной почты");
+            return false;
+        }
         int fl = 1;
         if (!char.IsLetter(email[0]))
         {
