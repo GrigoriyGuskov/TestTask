@@ -268,7 +268,8 @@ internal class Employee
                 commandString += ", ";
             commandString += EmployeesDBinfo.Columns[5] + " = " + text;
         }
-
+        if (!setfl)
+            return null;
         return commandString;
     }
     public bool IsValid()

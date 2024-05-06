@@ -175,7 +175,7 @@ internal static class EmployeesDBinfo
         command.ExecuteNonQuery();
     }
 
-        public static void UpdateEmployee()
+    public static void UpdateEmployee()
     {
         if (_connection == null || _connection.State != ConnectionState.Open)
         {
@@ -215,7 +215,6 @@ internal static class EmployeesDBinfo
                 return;
             }
         }
-
     }
 
 }
