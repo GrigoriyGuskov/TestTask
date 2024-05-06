@@ -1,7 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using System;
 using System.Data;
-using System.Threading.Tasks;
 
 class Program
 {
@@ -40,7 +39,7 @@ class Program
                     EmployeesDBinfo.DeleteEmployee();
                     break;
                 case "deleteall":
-                    EmployeesDBinfo.DeleteAllEmployee();
+                    EmployeesDBinfo.DeleteAllEmployees();
                     break;
                 default:
                     Console.WriteLine("Неизвестная команда");

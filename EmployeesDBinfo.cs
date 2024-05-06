@@ -1,7 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using System;
 using System.Data;
-using System.Threading.Tasks;
 
 
 
@@ -153,7 +152,7 @@ internal static class EmployeesDBinfo
         }
 
     }
-    public static void DeleteAllEmployee()
+    public static void DeleteAllEmployees()
     {
         if (_connection == null || _connection.State != ConnectionState.Open)
         {
