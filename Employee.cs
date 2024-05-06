@@ -80,7 +80,7 @@ internal class Employee
 
         while (!IsValidName(text))
         {
-            Console.WriteLine("Это имя не подходит. Попробуйте еще раз или введите \"Cancel\" для отмены");
+            Console.WriteLine("Попробуйте еще раз или введите \"Cancel\" для отмены");
             text = Console.ReadLine();
             if (text.ToLower() == "cancel")
                 return false;
@@ -94,7 +94,7 @@ internal class Employee
         
         while (!IsValidName(text))
         {
-            Console.WriteLine("Эта фамилия не подходит. Попробуйте еще раз или введите \"Cancel\" для отмены");
+            Console.WriteLine("Попробуйте еще раз или введите \"Cancel\" для отмены");
             text = Console.ReadLine();
             if (text.ToLower() == "cancel")
                 return false;
@@ -108,7 +108,7 @@ internal class Employee
         
         while (!IsValidEmail(text))
         {
-            Console.WriteLine("Этот email не подходит. Попробуйте еще раз или введите \"Cancel\" для отмены");
+            Console.WriteLine("Попробуйте еще раз или введите \"Cancel\" для отмены");
             text = Console.ReadLine();
             if (text.ToLower() == "cancel")
                 return false;
@@ -122,7 +122,7 @@ internal class Employee
         DateOnly resDOB;
         while (!DateOnly.TryParse(text,out resDOB) || !IsValidDateOfBirth(resDOB))
         {
-            Console.WriteLine("Проверьте корректность введённой даты, а также мы не принимаем на работу лиц младше 14 лет. Попробуйте еще раз или введите \"Cancel\" для отмены");
+            Console.WriteLine("Проверьте корректность введённой даты. Попробуйте еще раз или введите \"Cancel\" для отмены");
             text = Console.ReadLine();
             if (text.ToLower() == "cancel")
                 return false;
@@ -159,7 +159,7 @@ internal class Employee
 
         while (text != "-" && !Employee.IsValidName(text))
         {
-            Console.WriteLine("Это имя не подходит. Попробуйте еще раз или введите \"Cancel\" для отмены");
+            Console.WriteLine("Попробуйте еще раз или введите \"Cancel\" для отмены");
             text = Console.ReadLine();
             if (text.ToLower() == "cancel")
                 return null;
@@ -183,7 +183,7 @@ internal class Employee
 
         while (text != "-" && !Employee.IsValidName(text))
         {
-            Console.WriteLine("Эта фамилия не подходит. Попробуйте еще раз или введите \"Cancel\" для отмены");
+            Console.WriteLine("Попробуйте еще раз или введите \"Cancel\" для отмены");
             text = Console.ReadLine();
             if (text.ToLower() == "cancel")
                 return null;
@@ -207,7 +207,7 @@ internal class Employee
 
         while (text != "-" && !Employee.IsValidEmail(text))
         {
-            Console.WriteLine("Этот email не подходит. Попробуйте еще раз или введите \"Cancel\" для отмены");
+            Console.WriteLine("Попробуйте еще раз или введите \"Cancel\" для отмены");
             text = Console.ReadLine();
             if (text.ToLower() == "cancel")
                 return null;
@@ -228,10 +228,10 @@ internal class Employee
         text = Console.ReadLine();
         if (text.ToLower() == "cancel")
             return null;
-        DateOnly resDOB = DateOnly.Parse("01/01/2000");
+        DateOnly resDOB = DateOnly.FromDateTime(DateTime.Now);
         while (text != "-" && (!DateOnly.TryParse(text, out resDOB) || !Employee.IsValidDateOfBirth(resDOB)))
         {
-            Console.WriteLine("Проверьте корректность введённой даты, а также мы не принимаем на работу лиц младше 14 лет. Попробуйте еще раз или введите \"Cancel\" для отмены");
+            Console.WriteLine("Проверьте корректность введённой даты. Попробуйте еще раз или введите \"Cancel\" для отмены");
             text = Console.ReadLine();
             if (text.ToLower() == "cancel")
                 return null;
@@ -282,72 +282,125 @@ internal class Employee
 
     public static bool IsValidName(string name)
     {
-        if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) || name.Length > 50 || name.Split(" ").Length != 1)
+        if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
+        {
+            Console.WriteLine("Имя или фамилия не может быть пустым");
             return false;
+        }
+        if(name.Length > 50)
+        {
+            Console.WriteLine("Слишком длинное имя или фамилия");
+        }
         foreach (char let in name)
             if (!char.IsLetter(let))
+            {
+                Console.WriteLine("Имя или фамилия могут содержать только буквы");
                 return false;
+            }
         return true;
     }
     public static bool IsValidEmail(string email) 
     {
         if (email.Length < 5 || email.Length > 100)
             return false;
-        int fl = 0;
+        int fl = 1;
         if (!char.IsLetter(email[0]))
+        {
+            Console.WriteLine("Адрес почты должен начинаться с буквы");
             return false;
+        }
         foreach (char let in email)
         {
             switch (fl)
             {
-                case 0:
-                    if (char.IsLetterOrDigit(let))
-                        ++fl;
-                    else
-                        return false;
-                    break;
                 case 1:
                     if (let == '@')
                         ++fl;
                     else if (!(let == '-' || let == '_' || let == '.' || char.IsLetterOrDigit(let)))
+                    {
+                        Console.WriteLine("Адрес почты может содержать только буквы, цифры или знаки .-_");
+
                         return false;
+                    }
                     break;
                 case 2:
                     if (char.IsLetter(let))
                         ++fl;
                     else
+                    {
+                        Console.WriteLine("Домен может содержать только буквы");
                         return false;
+                    }
                     break;
                 case 3:
                     if (let == '.')
                         ++fl;
                     else if (!char.IsLetter(let))
+                    {
+                        Console.WriteLine("Домен может содержать только буквы");
                         return false;
+                    }
                     break;
                 case 4:
                     if (char.IsLetter(let))
                         ++fl;
+                    else
+                    {
+                        Console.WriteLine("Домен может содержать только буквы");
+                        return false;
+                    }
                     break;
                 case 5:
                     if (!char.IsLetter(let))
+                    {
+                        Console.WriteLine("Домен может содержать только буквы");
                         return false;
+                    }
                     break;
             }
             
         }
-        return true;
+        switch (fl)
+        {
+            case 1:
+                Console.WriteLine("Отсутствует \"@\"");
+                return false;
+            case 2:
+                Console.WriteLine("Отсутствует домен");
+                return false;
+            case 3:
+                Console.WriteLine("Отсутствует \".\" в домене");
+                return false;
+            case 4:
+                Console.WriteLine("Отсутствует код страны в домене");
+                return false;
+            case 5:
+                return true;
+        }
+        return false;
     }
     public static bool IsValidDateOfBirth(DateOnly dateOfBirth)
     {
         DateOnly today = DateOnly.FromDateTime(DateTime.Now);
         if (today < dateOfBirth.AddYears(14))
+        {
+            Console.WriteLine("Возраст не должен быть меньше 14 лет");
             return false;
+        }
         return true;
     }
     public static bool IsValidSalary(decimal salary)
     {
-        if(salary < 0 || salary > (decimal)9999999999999999.99) 
+        if (salary < 0)
+        {
+            Console.WriteLine("Зарплата не может быть отрицательной");
             return false;
+        }
+        if(salary > (decimal)9999999999999999.99)
+        {
+            Console.WriteLine("Слишком большая зарплата");
+            return false;
+        }
         return true;
     }
 

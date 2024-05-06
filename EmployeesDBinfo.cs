@@ -130,6 +130,7 @@ internal static class EmployeesDBinfo
                     reader.Close();
                     return;
                 }
+                reader.Close();
             }
             else
             {
@@ -169,6 +170,7 @@ internal static class EmployeesDBinfo
                     reader.Close();
                     return;
                 }
+                reader.Close();
             }
             else
             {
