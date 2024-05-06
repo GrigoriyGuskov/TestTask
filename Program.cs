@@ -33,6 +33,7 @@ class Program
                     EmployeesDBinfo.PrintAll();
                     break;
                 case "update":
+                    EmployeesDBinfo.UpdateEmployee();
                     break;
                 case "delete":
                     EmployeesDBinfo.DeleteEmployee();

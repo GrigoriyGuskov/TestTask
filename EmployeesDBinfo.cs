@@ -134,5 +134,47 @@ internal static class EmployeesDBinfo
 
     }
 
+    public static void UpdateEmployee()
+    {
+        if (_connection == null || _connection.State != ConnectionState.Open)
+        {
+            Console.WriteLine("Отсутствует подключение");
+            return;
+        }
+        Console.WriteLine("Введите ID сотрудника");
+        string text = Console.ReadLine();
+        if (text.ToLower() == "cancel")
+            return;
+
+        while (true)
+        {
+            string commandString = $"SELECT * FROM Employees WHERE EmployeeID = {text}";
+            SqlCommand command = new SqlCommand(commandString, _connection);
+            SqlDataReader reader = command.ExecuteReader();
+            if (!reader.HasRows)
+            {
+                Console.WriteLine($"Не удалось найти сотрудника с ID {text}. Попробуйте еще раз или введите \"Cancel\" для отмены");
+                text = Console.ReadLine();
+                if (text.ToLower() == "cancel")
+                {
+                    reader.Close();
+                    return;
+                }
+            }
+            else
+            {
+                reader.Close();
+                commandString = Employee.GetUpdateString();
+                if (commandString == null)
+                    return;
+                commandString += $" WHERE EmployeeID = {text}";
+                command = new SqlCommand(commandString, _connection);
+                command.ExecuteNonQuery();
+                return;
+            }
+        }
+
+    }
+
 }
 

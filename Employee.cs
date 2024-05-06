@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 internal class Employee
 {
@@ -76,100 +77,226 @@ internal class Employee
         string text = Console.ReadLine();
         if (text.ToLower() == "cancel")
             return false;
-        FirstName = text;
-        while (!IsValidFirstName())
+
+        while (!IsValidName(text))
         {
             Console.WriteLine("Это имя не подходит. Попробуйте еще раз или введите \"Cancel\" для отмены");
             text = Console.ReadLine();
             if (text.ToLower() == "cancel")
                 return false;
-            FirstName = text;
         }
+        FirstName = text;
+
         Console.WriteLine("Введите фамилию:");
         text = Console.ReadLine();
         if (text.ToLower() == "cancel")
             return false;
-        LastName = text;
-        while (!IsValidLastName())
+        
+        while (!IsValidName(text))
         {
             Console.WriteLine("Эта фамилия не подходит. Попробуйте еще раз или введите \"Cancel\" для отмены");
             text = Console.ReadLine();
             if (text.ToLower() == "cancel")
                 return false;
-            LastName = text;
         }
+        LastName = text;
+
         Console.WriteLine("Введите email:");
         text = Console.ReadLine();
         if (text.ToLower() == "cancel")
             return false;
-        Email = text;
-        while (!IsValidEmail())
+        
+        while (!IsValidEmail(text))
         {
             Console.WriteLine("Этот email не подходит. Попробуйте еще раз или введите \"Cancel\" для отмены");
             text = Console.ReadLine();
             if (text.ToLower() == "cancel")
                 return false;
-            Email = text;
         }
-        Console.WriteLine("Введите дату рождения:");
+        Email = text;
+
+        Console.WriteLine("Введите дату рождения в формате DD/MM/YYYY:");
         text = Console.ReadLine();
         if (text.ToLower() == "cancel")
             return false;
-        DateOfBirth = DateOnly.Parse(text);
-        while (!IsValidDateOfBirth())
+        DateOnly resDOB;
+        while (!DateOnly.TryParse(text,out resDOB) || !IsValidDateOfBirth(resDOB))
         {
-            Console.WriteLine("Мы не принимаем на работу лиц младше 14 лет. Попробуйте еще раз или введите \"Cancel\" для отмены");
+            Console.WriteLine("Проверьте корректность введённой даты, а также мы не принимаем на работу лиц младше 14 лет. Попробуйте еще раз или введите \"Cancel\" для отмены");
             text = Console.ReadLine();
             if (text.ToLower() == "cancel")
                 return false;
-            DateOfBirth = DateOnly.Parse(text);
         }
+        DateOfBirth = resDOB;
+
         Console.WriteLine("Введите зарплату:");
         text = Console.ReadLine();
         if (text.ToLower() == "cancel")
             return false;
-        Salary = decimal.Parse(text);
-        while (!IsValidSalary())
+        decimal resS;
+        while (!decimal.TryParse(text, out resS) || !IsValidSalary(resS))
         {
             Console.WriteLine("Видимо в бухгалтерии опять всё перепутали. Попробуйте еще раз или введите \"Cancel\" для отмены");
             text = Console.ReadLine();
             if (text.ToLower() == "cancel")
                 return false;
-            Salary = decimal.Parse(text);
         }
+        Salary = resS;
+
         return true;
+    }
+
+    public static string GetUpdateString()
+    {
+        string commandString = $"UPDATE Employees ";
+
+        bool setfl = false;
+
+        Console.WriteLine("Введите новое имя или \"-\" чтобы оставить без изменений:");
+        string text = Console.ReadLine();
+        if (text.ToLower() == "cancel")
+            return null;
+
+        while (text != "-" && !Employee.IsValidName(text))
+        {
+            Console.WriteLine("Это имя не подходит. Попробуйте еще раз или введите \"Cancel\" для отмены");
+            text = Console.ReadLine();
+            if (text.ToLower() == "cancel")
+                return null;
+        }
+        if (text != "-")
+        {
+            if (!setfl)
+            {
+                setfl = true;
+                commandString += "SET ";
+            }
+            else
+                commandString += ", ";
+            commandString += "FirstName = '" + text + "'";
+        }
+
+        Console.WriteLine("Введите новую фамилию или \"-\" чтобы оставить без изменений:");
+        text = Console.ReadLine();
+        if (text.ToLower() == "cancel")
+            return null;
+
+        while (text != "-" && !Employee.IsValidName(text))
+        {
+            Console.WriteLine("Эта фамилия не подходит. Попробуйте еще раз или введите \"Cancel\" для отмены");
+            text = Console.ReadLine();
+            if (text.ToLower() == "cancel")
+                return null;
+        }
+        if (text != "-")
+        {
+            if (!setfl)
+            {
+                setfl = true;
+                commandString += "SET ";
+            }
+            else
+                commandString += ", ";
+            commandString += "LastName = '" + text + "'";
+        }
+
+        Console.WriteLine("Введите новый email или \"-\" чтобы оставить без изменений:");
+        text = Console.ReadLine();
+        if (text.ToLower() == "cancel")
+            return null;
+
+        while (text != "-" && !Employee.IsValidEmail(text))
+        {
+            Console.WriteLine("Этот email не подходит. Попробуйте еще раз или введите \"Cancel\" для отмены");
+            text = Console.ReadLine();
+            if (text.ToLower() == "cancel")
+                return null;
+        }
+        if (text != "-")
+        {
+            if (!setfl)
+            {
+                setfl = true;
+                commandString += "SET ";
+            }
+            else
+                commandString += ", ";
+            commandString += "Email = '" + text + "'";
+        }
+
+        Console.WriteLine("Введите новую дату рождения в формате DD/MM/YYYY:");
+        text = Console.ReadLine();
+        if (text.ToLower() == "cancel")
+            return null;
+        DateOnly resDOB = DateOnly.Parse("01/01/2000");
+        while (text != "-" && (!DateOnly.TryParse(text, out resDOB) || !Employee.IsValidDateOfBirth(resDOB)))
+        {
+            Console.WriteLine("Проверьте корректность введённой даты, а также мы не принимаем на работу лиц младше 14 лет. Попробуйте еще раз или введите \"Cancel\" для отмены");
+            text = Console.ReadLine();
+            if (text.ToLower() == "cancel")
+                return null;
+        }
+        if (text != "-")
+        {
+            if (!setfl)
+            {
+                setfl = true;
+                commandString += "SET ";
+            }
+            else
+                commandString += ", ";
+            commandString += $"DateOfBirth = '{resDOB.Year}.{resDOB.Month}.{resDOB.Day}'";
+
+        }
+
+        Console.WriteLine("Введите новую зарплату или \"-\" чтобы оставить без изменений:");
+        text = Console.ReadLine();
+        if (text.ToLower() == "cancel")
+            return null;
+        decimal resS;
+        while (text != "-" && (!decimal.TryParse(text, out resS) || !Employee.IsValidSalary(resS)))
+        {
+            Console.WriteLine("Видимо в бухгалтерии опять всё перепутали. Попробуйте еще раз или введите \"Cancel\" для отмены");
+            text = Console.ReadLine();
+            if (text.ToLower() == "cancel")
+                return null;
+        }
+        if (text != "-")
+        {
+            if (!setfl)
+            {
+                setfl = true;
+                commandString += "SET ";
+            }
+            else
+                commandString += ", ";
+            commandString += "Salary = " + text;
+        }
+
+        return commandString;
     }
     public bool IsValid()
     {
-        return IsValidFirstName() && IsValidLastName() && IsValidEmail() && IsValidDateOfBirth() && IsValidSalary();
+        return IsValidName(FirstName) && IsValidName(LastName) && IsValidEmail(Email) && IsValidDateOfBirth(DateOfBirth) && IsValidSalary(Salary);
     }
 
-    public bool IsValidFirstName()
+    public static bool IsValidName(string name)
     {
-        if (string.IsNullOrEmpty(FirstName) || string.IsNullOrWhiteSpace(FirstName) || FirstName.Length > 50 || FirstName.Split(" ").Length != 1)
+        if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) || name.Length > 50 || name.Split(" ").Length != 1)
             return false;
-        foreach (char let in FirstName)
+        foreach (char let in name)
             if (!char.IsLetter(let))
                 return false;
         return true;
     }
-    public bool IsValidLastName()
+    public static bool IsValidEmail(string email) 
     {
-        if (string.IsNullOrEmpty(LastName) || string.IsNullOrWhiteSpace(LastName) || LastName.Length > 50 || LastName.Split(" ").Length != 1)
-            return false;
-        foreach (char let in LastName)
-            if (!char.IsLetter(let))
-                return false;
-        return true;
-    }
-    public bool IsValidEmail() 
-    {
-        if (Email.Length < 5 || Email.Length > 100)
+        if (email.Length < 5 || email.Length > 100)
             return false;
         int fl = 0;
-        if (!char.IsLetter(Email[0]))
+        if (!char.IsLetter(email[0]))
             return false;
-        foreach (char let in Email)
+        foreach (char let in email)
         {
             switch (fl)
             {
@@ -210,16 +337,16 @@ internal class Employee
         }
         return true;
     }
-    public bool IsValidDateOfBirth()
+    public static bool IsValidDateOfBirth(DateOnly dateOfBirth)
     {
         DateOnly today = DateOnly.FromDateTime(DateTime.Now);
-        if (today < DateOfBirth.AddYears(14))
+        if (today < dateOfBirth.AddYears(14))
             return false;
         return true;
     }
-    public bool IsValidSalary()
+    public static bool IsValidSalary(decimal salary)
     {
-        if(Salary < 0 || Salary > (decimal)9999999999999999.99) 
+        if(salary < 0 || salary > (decimal)9999999999999999.99) 
             return false;
         return true;
     }
