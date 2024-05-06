@@ -173,7 +173,7 @@ internal class Employee
             }
             else
                 commandString += ", ";
-            commandString += "FirstName = '" + text + "'";
+            commandString += EmployeesDBinfo.Columns[1] + " = '" + text + "'";
         }
 
         Console.WriteLine("Введите новую фамилию или \"-\" чтобы оставить без изменений:");
@@ -197,7 +197,7 @@ internal class Employee
             }
             else
                 commandString += ", ";
-            commandString += "LastName = '" + text + "'";
+            commandString += EmployeesDBinfo.Columns[2] + " = '" + text + "'";
         }
 
         Console.WriteLine("Введите новый email или \"-\" чтобы оставить без изменений:");
@@ -221,7 +221,7 @@ internal class Employee
             }
             else
                 commandString += ", ";
-            commandString += "Email = '" + text + "'";
+            commandString += EmployeesDBinfo.Columns[3] + " = '" + text + "'";
         }
 
         Console.WriteLine("Введите новую дату рождения в формате DD/MM/YYYY или \"-\" чтобы оставить без изменений:");
@@ -245,7 +245,7 @@ internal class Employee
             }
             else
                 commandString += ", ";
-            commandString += $"DateOfBirth = '{resDOB.Year}.{resDOB.Month}.{resDOB.Day}'";
+            commandString += $"{EmployeesDBinfo.Columns[4]} = '{resDOB.Year}.{resDOB.Month}.{resDOB.Day}'";
 
         }
 
@@ -270,7 +270,7 @@ internal class Employee
             }
             else
                 commandString += ", ";
-            commandString += "Salary = " + text;
+            commandString += EmployeesDBinfo.Columns[5] + " = " + text;
         }
 
         return commandString;

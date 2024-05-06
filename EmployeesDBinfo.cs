@@ -12,7 +12,15 @@ internal static class EmployeesDBinfo
     private static string _database = "EmployeeDB";
     private static string _table = "Employees";
     private static SqlConnection _connection = null;
+    private static string[] _columns = {    "EmployeeID",
+                                            "FirstName",
+                                            "LastName",
+                                            "Email",
+                                            "DateOfBirth",
+                                            "Salary"
+                                        };
     public static string Table { get { return _table; } }
+    public static string[] Columns { get { return _columns; } }
     public static string ConnectionString
     {
         get
@@ -78,7 +86,7 @@ internal static class EmployeesDBinfo
             Console.WriteLine("Неверные данные работника");
             return;
         }
-        string commandString = $"INSERT INTO {_table} (FirstName, LastName, Email, DateOfBirth, Salary) VALUES ('{worker.FirstName}', '{worker.LastName}', '{worker.Email}', '{worker.DateOfBirth.Year}.{worker.DateOfBirth.Month}.{worker.DateOfBirth.Day}', {worker.Salary})";
+        string commandString = $"INSERT INTO {_table} ({_columns[1]}, {_columns[2]}, {_columns[3]}, {_columns[4]}, {_columns[5]}) VALUES ('{worker.FirstName}', '{worker.LastName}', '{worker.Email}', '{worker.DateOfBirth.Year}.{worker.DateOfBirth.Month}.{worker.DateOfBirth.Day}', {worker.Salary})";
         SqlCommand command = new SqlCommand(commandString, _connection);
         var res =  command.ExecuteNonQuery();
         if (res == 0)
@@ -118,7 +126,7 @@ internal static class EmployeesDBinfo
         
         while (true)
         {
-            string commandString = $"SELECT * FROM {_table} WHERE EmployeeID = {text}";
+            string commandString = $"SELECT * FROM {_table} WHERE {_columns[0]} = {text}";
             SqlCommand command = new SqlCommand(commandString, _connection);
             SqlDataReader reader = command.ExecuteReader();
             if (!reader.HasRows)
@@ -135,7 +143,7 @@ internal static class EmployeesDBinfo
             else
             {
                 reader.Close();
-                commandString = $"DELETE FROM {_table} WHERE EmployeeID = {text}";
+                commandString = $"DELETE FROM {_table} WHERE {_columns[0]} = {text}";
                 command = new SqlCommand(commandString, _connection);
                 command.ExecuteNonQuery();
                 return;
@@ -158,7 +166,7 @@ internal static class EmployeesDBinfo
 
         while (true)
         {
-            string commandString = $"SELECT * FROM {_table} WHERE EmployeeID = {text}";
+            string commandString = $"SELECT * FROM {_table} WHERE {_columns[0]} = {text}";
             SqlCommand command = new SqlCommand(commandString, _connection);
             SqlDataReader reader = command.ExecuteReader();
             if (!reader.HasRows)
@@ -178,7 +186,7 @@ internal static class EmployeesDBinfo
                 commandString = Employee.GetUpdateString();
                 if (commandString == null)
                     return;
-                commandString += $" WHERE EmployeeID = {text}";
+                commandString += $" WHERE {_columns[0]} = {text}";
                 command = new SqlCommand(commandString, _connection);
                 command.ExecuteNonQuery();
                 return;
