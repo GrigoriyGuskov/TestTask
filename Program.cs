@@ -9,15 +9,16 @@ class Program
         SqlConnection connection = EmployeesDBinfo.Connect();
 
         PrintCommands();
-
-        Console.WriteLine("Введите команду: ");
-        string text = Console.ReadLine();
-        text.ToLower();
-
-        while(text != "exit")
+        string text;
+        do
         {
-            switch(text)
+            Console.WriteLine("\nВведите команду: ");
+            text = Console.ReadLine();
+            text.ToLower();
+            switch (text)
             {
+                case "exit":
+                    break;
                 case "help":
                     PrintCommands();
                     break;
@@ -26,7 +27,7 @@ class Program
                     break;
                 case "add":
                     var worker = new Employee();
-                    if(worker.SetEmployee())
+                    if (worker.SetEmployee())
                         EmployeesDBinfo.AddEmployee(worker);
                     break;
                 case "print":
@@ -42,23 +43,20 @@ class Program
                     EmployeesDBinfo.DeleteAllEmployees();
                     break;
                 default:
-                    Console.WriteLine("Неизвестная команда");
+                    Console.WriteLine("Неизвестная команда. Введите \"Help\", чтобы посмотреть список всех доступных команд.");
                     break;
             }
+        } while (text != "exit");
 
-            Console.WriteLine("\nВведите команду: ");
-            text = Console.ReadLine();
-            text.ToLower();
-        }
-        
+
         if (connection != null)
             connection.Close();
     }
     static void PrintCommands()
     {
         Console.WriteLine("Список доступных команд:");
-        Console.WriteLine("Help - посмотреть список доступных команд");
-        Console.WriteLine("Reconnect - изменить данные БД и переподключиться");
+        Console.WriteLine("Help - просмотр списка доступных команд");
+        Console.WriteLine("Reconnect - изменение данных БД и переподключение");
         Console.WriteLine("Add - добавление нового сотрудника");
         Console.WriteLine("Print - просмотр всех сотрудников");
         Console.WriteLine("Update - обновление информации о сотруднике");
