@@ -144,7 +144,7 @@ internal class Employee
 
     public static string GetUpdateString()
     {
-        string commandString = $"UPDATE {EmployeesDBinfo.Table} ";
+        string commandString = $"UPDATE {EmployeesDBinfo.Table} SET ";
 
         bool setfl = false;
 
@@ -162,13 +162,7 @@ internal class Employee
         }
         if (text != "-")
         {
-            if (!setfl)
-            {
-                setfl = true;
-                commandString += "SET ";
-            }
-            else
-                commandString += ", ";
+            setfl = true;
             commandString += EmployeesDBinfo.Columns[1] + " = '" + text + "'";
         }
 
@@ -186,13 +180,9 @@ internal class Employee
         }
         if (text != "-")
         {
-            if (!setfl)
-            {
-                setfl = true;
-                commandString += "SET ";
-            }
-            else
+            if (setfl)
                 commandString += ", ";
+            setfl = true;
             commandString += EmployeesDBinfo.Columns[2] + " = '" + text + "'";
         }
 
@@ -210,13 +200,9 @@ internal class Employee
         }
         if (text != "-")
         {
-            if (!setfl)
-            {
-                setfl = true;
-                commandString += "SET ";
-            }
-            else
+            if (setfl)
                 commandString += ", ";
+            setfl = true;
             commandString += EmployeesDBinfo.Columns[3] + " = '" + text + "'";
         }
 
@@ -234,13 +220,9 @@ internal class Employee
         }
         if (text != "-")
         {
-            if (!setfl)
-            {
-                setfl = true;
-                commandString += "SET ";
-            }
-            else
+            if (setfl)
                 commandString += ", ";
+            setfl = true;
             commandString += $"{EmployeesDBinfo.Columns[4]} = '{resDOB.Year}.{resDOB.Month}.{resDOB.Day}'";
 
         }
@@ -259,13 +241,9 @@ internal class Employee
         }
         if (text != "-")
         {
-            if (!setfl)
-            {
-                setfl = true;
-                commandString += "SET ";
-            }
-            else
+            if (setfl)
                 commandString += ", ";
+            setfl = true;
             commandString += EmployeesDBinfo.Columns[5] + " = " + text;
         }
         if (!setfl)
