@@ -30,7 +30,7 @@ internal static class EmployeesDBinfo
 
     public static SqlConnection Connect()
     {
-        _connection = new SqlConnection(EmployeesDBinfo.ConnectionString);
+        _connection = new SqlConnection(ConnectionString);
         try
         {
             _connection.Open();
@@ -60,12 +60,22 @@ internal static class EmployeesDBinfo
     {
         Console.WriteLine("Введите новое имя сервера или \"-\" чтобы оставить без изменений или \"Cancel\" для отмены:");
         string text = Console.ReadLine();
+        if (text.Contains(';'))
+        {
+            Console.WriteLine("Вероятная попытка SQL-инъекции");
+            return _connection;
+        }
         if (text.ToLower() == "cancel")
             return _connection;
         if(text != "-")
             _server = text;
         Console.WriteLine("Введите новое название базы данных или \"-\" чтобы оставить без изменений или \"Cancel\" для отмены:");
         text = Console.ReadLine();
+        if (text.Contains(';'))
+        {
+            Console.WriteLine("Вероятная попытка SQL-инъекции");
+            return _connection;
+        }
         if (text.ToLower() == "cancel")
             return _connection;
         if (text != "-")
@@ -124,30 +134,40 @@ internal static class EmployeesDBinfo
         string text = Console.ReadLine();
         if (text.ToLower() == "cancel")
             return;
-        
+        int ID;
         while (true)
         {
-            string commandString = $"SELECT * FROM {_table} WHERE {_columns[0]} = {text}";
-            SqlCommand command = new SqlCommand(commandString, _connection);
-            SqlDataReader reader = command.ExecuteReader();
-            if (!reader.HasRows)
+            if (!int.TryParse(text, out ID))
             {
-                Console.WriteLine($"Не удалось найти сотрудника с ID {text}. Попробуйте еще раз или введите \"Cancel\" для отмены");
+                Console.WriteLine($"\"{text}\" не является целым числом. Попробуйте еще раз или введите \"Cancel\" для отмены");
                 text = Console.ReadLine();
                 if (text.ToLower() == "cancel")
-                {
-                    reader.Close();
                     return;
-                }
-                reader.Close();
             }
             else
             {
-                reader.Close();
-                commandString = $"DELETE FROM {_table} WHERE {_columns[0]} = {text}";
-                command = new SqlCommand(commandString, _connection);
-                command.ExecuteNonQuery();
-                return;
+                string commandString = $"SELECT * FROM {_table} WHERE {_columns[0]} = {text}";
+                SqlCommand command = new SqlCommand(commandString, _connection);
+                SqlDataReader reader = command.ExecuteReader();
+                if (!reader.HasRows)
+                {
+                    Console.WriteLine($"Не удалось найти сотрудника с ID {ID}. Попробуйте еще раз или введите \"Cancel\" для отмены");
+                    text = Console.ReadLine();
+                    if (text.ToLower() == "cancel")
+                    {
+                        reader.Close();
+                        return;
+                    }
+                    reader.Close();
+                }
+                else
+                {
+                    reader.Close();
+                    commandString = $"DELETE FROM {_table} WHERE {_columns[0]} = {ID}";
+                    command = new SqlCommand(commandString, _connection);
+                    command.ExecuteNonQuery();
+                    return;
+                }
             }
         }
 
@@ -186,33 +206,43 @@ internal static class EmployeesDBinfo
         string text = Console.ReadLine();
         if (text.ToLower() == "cancel")
             return;
-
+        int ID;
         while (true)
         {
-            string commandString = $"SELECT * FROM {_table} WHERE {_columns[0]} = {text}";
-            SqlCommand command = new SqlCommand(commandString, _connection);
-            SqlDataReader reader = command.ExecuteReader();
-            if (!reader.HasRows)
+            if (!int.TryParse(text, out ID))
             {
-                Console.WriteLine($"Не удалось найти сотрудника с ID {text}. Попробуйте еще раз или введите \"Cancel\" для отмены");
+                Console.WriteLine($"\"{text}\" не является целым числом. Попробуйте еще раз или введите \"Cancel\" для отмены");
                 text = Console.ReadLine();
                 if (text.ToLower() == "cancel")
-                {
-                    reader.Close();
                     return;
-                }
-                reader.Close();
             }
             else
             {
-                reader.Close();
-                commandString = Employee.GetUpdateString();
-                if (commandString == null)
+                string commandString = $"SELECT * FROM {_table} WHERE {_columns[0]} = {ID}";
+                SqlCommand command = new SqlCommand(commandString, _connection);
+                SqlDataReader reader = command.ExecuteReader();
+                if (!reader.HasRows)
+                {
+                    Console.WriteLine($"Не удалось найти сотрудника с ID {ID}. Попробуйте еще раз или введите \"Cancel\" для отмены");
+                    text = Console.ReadLine();
+                    if (text.ToLower() == "cancel")
+                    {
+                        reader.Close();
+                        return;
+                    }
+                    reader.Close();
+                }
+                else
+                {
+                    reader.Close();
+                    commandString = Employee.GetUpdateString();
+                    if (commandString == null)
+                        return;
+                    commandString += $" WHERE {_columns[0]} = {ID}";
+                    command = new SqlCommand(commandString, _connection);
+                    command.ExecuteNonQuery();
                     return;
-                commandString += $" WHERE {_columns[0]} = {text}";
-                command = new SqlCommand(commandString, _connection);
-                command.ExecuteNonQuery();
-                return;
+                }
             }
         }
     }
