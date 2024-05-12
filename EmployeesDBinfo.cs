@@ -146,7 +146,7 @@ internal static class EmployeesDBinfo
             }
             else
             {
-                string commandString = $"SELECT * FROM {_table} WHERE {_columns[0]} = {text}";
+                string commandString = $"SELECT * FROM {_table} WHERE {_columns[0]} = {ID}";
                 SqlCommand command = new SqlCommand(commandString, _connection);
                 SqlDataReader reader = command.ExecuteReader();
                 if (!reader.HasRows)
