@@ -51,10 +51,45 @@ internal static class EmployeesDBinfo
             {
                 _connection = null;
             }
+            else
+            {
+                CheckTable(_table);
+            }
 
         }
         
         return _connection;
+    }
+
+    public static bool CheckTable(string tableName)
+    {
+        string commandString = $"SELECT COUNT(*) FROM sys.tables WHERE name='{tableName}'";
+        SqlCommand command = new SqlCommand(commandString, _connection);
+        int res = (int)command.ExecuteScalar();
+        if (res != 1)
+        {
+            Console.WriteLine($"Отсутствует таблица \"{tableName}\"");
+            return false;
+        }
+        return true;
+    } 
+    public static bool CheckColumns(string tableName, string[] columnNames)
+    {
+        if (!CheckTable(_table))
+            return false;
+        bool cr = true;
+        foreach (string column in columnNames)
+        {
+            string commandString = $"SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_NAME='{tableName}' AND COLUMN_NAME='{column}'";
+            SqlCommand command = new SqlCommand(commandString, _connection);
+            int res = (int)command.ExecuteScalar();
+            if (res != 1)
+            {
+                Console.WriteLine($"Отсутствует столбец \"{column}\" в таблице \"{tableName}\"");
+                cr = false;
+            }
+        }
+        return cr;
     }
     public static SqlConnection ReConnect()
     {
@@ -90,6 +125,8 @@ internal static class EmployeesDBinfo
             Console.WriteLine("Отсутствует подключение");
             return;
         }
+        if (!CheckTable(_table) || !CheckColumns(_table, _columns))
+            return;
         if (!worker.IsValid())
         {
             Console.WriteLine("Неверные данные работника");
@@ -108,6 +145,8 @@ internal static class EmployeesDBinfo
             Console.WriteLine("Отсутствует подключение");
             return;
         }
+        if (!CheckTable(_table))
+            return;
         string commandString = $"SELECT * FROM {_table}";
         SqlCommand command = new SqlCommand(commandString, _connection);
         SqlDataReader reader = command.ExecuteReader();
@@ -130,6 +169,8 @@ internal static class EmployeesDBinfo
             Console.WriteLine("Отсутствует подключение");
             return;
         }
+        if (!CheckTable(_table) || !CheckColumns(_table, new string[] { _columns[0]}))
+            return;
         Console.WriteLine("Введите ID сотрудника");
         string text = Console.ReadLine();
         if (text.ToLower() == "cancel")
@@ -179,6 +220,8 @@ internal static class EmployeesDBinfo
             Console.WriteLine("Отсутствует подключение");
             return;
         }
+        if (!CheckTable(_table))
+            return;
         Console.WriteLine("Вы уверены, что хотите удалить все данные?");
         Console.WriteLine("Введите \"Yes\" или \"No\":");
         string text = Console.ReadLine();
@@ -202,6 +245,8 @@ internal static class EmployeesDBinfo
             Console.WriteLine("Отсутствует подключение");
             return;
         }
+        if (!CheckTable(_table) || !CheckColumns(_table, new string[] {_columns[0]}))
+            return;
         Console.WriteLine("Введите ID сотрудника");
         string text = Console.ReadLine();
         if (text.ToLower() == "cancel")
