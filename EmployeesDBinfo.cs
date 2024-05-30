@@ -63,6 +63,11 @@ internal static class EmployeesDBinfo
 
     public static bool CheckTable(string tableName)
     {
+        if (_connection == null || _connection.State != ConnectionState.Open)
+        {
+            Console.WriteLine("Отсутствует подключение");
+            return false;
+        }
         string commandString = $"SELECT COUNT(*) FROM sys.tables WHERE name='{tableName}'";
         SqlCommand command = new SqlCommand(commandString, _connection);
         int res = (int)command.ExecuteScalar();
@@ -75,6 +80,11 @@ internal static class EmployeesDBinfo
     } 
     public static bool CheckColumns(string tableName, string[] columnNames)
     {
+        if (_connection == null || _connection.State != ConnectionState.Open)
+        {
+            Console.WriteLine("Отсутствует подключение");
+            return false;
+        }
         if (!CheckTable(_table))
             return false;
         bool cr = true;
