@@ -13,8 +13,7 @@ class Program
         do
         {
             Console.WriteLine("\nВведите команду: ");
-            text = Console.ReadLine();
-            text.ToLower();
+            text = GetString();
             switch (text)
             {
                 case "exit":
@@ -26,24 +25,20 @@ class Program
                     connection = EmployeesDBinfo.ReConnect();
                     break;
                 case "add":
-                    var worker = new Employee();
-                    if (worker.SetEmployee())
-                        EmployeesDBinfo.AddEmployee(worker);
+                    EmployeesDBinfo.AddEmployee();
                     break;
                 case "print":
                     EmployeesDBinfo.PrintAll();
                     break;
                 case "update":
-                    EmployeesDBinfo.UpdateEmployee();
+                    EmployeesDBinfo.ModifyEmployee(EmployeesDBinfo.Mods.update);
                     break;
                 case "delete":
-                    EmployeesDBinfo.DeleteEmployee();
-                    break;
-                case "deleteall":
-                    EmployeesDBinfo.DeleteAllEmployees();
+                    EmployeesDBinfo.ModifyEmployee(EmployeesDBinfo.Mods.delete);
                     break;
                 default:
-                    Console.WriteLine("Неизвестная команда. Введите \"Help\", чтобы посмотреть список всех доступных команд.");
+                    Console.WriteLine($"Неизвестная команда \"{text}\". " +
+                        "Введите \"Help\", чтобы посмотреть список всех доступных команд.");
                     break;
             }
         } while (text != "exit");
@@ -52,6 +47,7 @@ class Program
         if (connection != null)
             connection.Close();
     }
+
     static void PrintCommands()
     {
         Console.WriteLine("Список доступных команд:");
@@ -61,7 +57,11 @@ class Program
         Console.WriteLine("Print - просмотр всех сотрудников");
         Console.WriteLine("Update - обновление информации о сотруднике");
         Console.WriteLine("Delete - удаление сотрудника");
-        Console.WriteLine("DeleteAll - удаление данных всех сотрудников");
         Console.WriteLine("Exit - выход из приложения\n");
+    }
+
+    public static string GetString()
+    {
+        return Console.ReadLine().ToLower().Trim(new char[] {' ', '\t', '\v'});
     }
 }
